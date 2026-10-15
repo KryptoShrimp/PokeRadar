@@ -1,0 +1,13 @@
+{
+  "fixture_note": "Synthetic test data. Neither price nor availability is a live claim.",
+  "source_id": "pokemon-center-us",
+  "sku": "10-10446-120",
+  "url": "https://www.pokemoncenter.com/product/10-10446-120/pokemon-tcg-mega-evolution-delta-reign-booster-display-box-36-packs",
+  "packs": 36,
+  "checked_at": "2026-10-15T12:00:00Z",
+  "fetch_outcome": "ok",
+  "availability": "in_stock",
+  "price_cents": 10000,
+  "currency": "USD",
+  "purchasable": true
+}
