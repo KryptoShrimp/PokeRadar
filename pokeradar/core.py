@@ -16,7 +16,10 @@ def timestamp(value: str) -> datetime:
     result = datetime.fromisoformat(value.replace("Z", "+00:00"))
     if result.tzinfo is None:
         raise ValueError("timestamp must include a timezone")
-    return result.astimezone(timezone.utc)
+    try:
+        return result.astimezone(timezone.utc)
+    except OverflowError as error:
+        raise ValueError("timestamp is outside the supported UTC range") from error
 
 
 @dataclass(frozen=True)
