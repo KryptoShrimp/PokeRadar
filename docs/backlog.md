@@ -25,3 +25,12 @@ Planning reference: https://chatgpt.com/space/page_238f42b149808191b59c73ec247df
 8. **Later product work:** dashboard; additional permitted retailers; Aurora/Denver vending-location registry with expiring sightings (not live inventory); resale economics from sourced completed sales; outcome tracking before prediction.
 
 No spending, infrastructure deployment, purchases, checkout automation or new recurring tasks are authorized in this build. Fixture readiness does not imply live-source readiness or deployed operation.
+
+
+## Local dashboard review — October 16, 2026
+
+Implemented on local branch `feat/local-readonly-dashboard`, based on `06729b8ef03d86692f2384afbe6275821fd5d6a4`. Michael authorized publishing this milestone as a second draft PR on October 16, 2026, stacked against `feat/offline-inventory-core` (PR #1). It adds a loopback read-only dashboard, temporary synthetic demo, empty/error states and dynamic freshness. The dashboard remains fixture-only. No live access, schedules, alert changes, Actions or paid services were enabled.
+
+Validation: 28 unit/integration tests pass, including all 17 core regression tests. Syntax compilation and whitespace checks pass. Chromium browser checks cover desktop (1440 px) and mobile (390 px), navigation, provenance disclosure and absence of page-level horizontal overflow. History tables intentionally scroll within their containers on narrow screens.
+
+Pre-publication review: hardened malformed Unicode/deep JSON handling, explicit schema columns and duplicate Host rejection. Added checks for URI-special filenames, bounded reads and fixture URLs never becoming links. Dashboard-only tests: 11 passed; aggregate: 28 passed. Publication as a draft is authorized; no merge or deployment is authorized.

@@ -6,7 +6,39 @@ Offline Pokémon TCG MSRP inventory-intelligence MVP. Python 3.12+ and standard-
 
 ## What you can do today
 
-Run a local command-line demo that reads a sample inventory observation, saves its history, and previews one pretend alert. Run it again to see duplicate alerts suppressed. This is the tested foundation for a future monitor; there is no website or live inventory feed yet. Start with the demo below, then inspect `pokeradar/core.py` for safety rules, `pokeradar/store.py` for history and deduplication, and `tests/test_pipeline.py` for the tested scenarios.
+Run a local command-line demo that reads a sample inventory observation, saves its history, and previews one pretend alert. Run it again to see duplicate alerts suppressed. This is the tested foundation for a future monitor; a local read-only dashboard is available, but there is no live inventory feed. Start with the demo below, then inspect `pokeradar/core.py` for safety rules, `pokeradar/store.py` for history and deduplication, and `tests/test_pipeline.py` for the tested scenarios.
+
+## Mac quick start (dashboard review branch)
+
+Requires Git and **Python 3.12 or newer**. Check with `python3 --version`; no Python packages are needed. In Terminal, for a new checkout:
+
+```sh
+git clone --branch feat/local-readonly-dashboard https://github.com/KryptoShrimp/PokeRadar.git
+cd PokeRadar
+python3 -m pokeradar dashboard --demo
+```
+
+Then open **http://127.0.0.1:8765** in Safari or Chrome. Keep Terminal running; press Ctrl+C to stop. For an existing clean checkout, run `git fetch origin` and `git switch feat/local-readonly-dashboard` first. The GitHub PR contains reviewable code; it does not host a running dashboard.
+
+## Local read-only dashboard
+
+Launch a labeled synthetic demo with one command, then open **http://127.0.0.1:8765**:
+
+```sh
+python -m pokeradar dashboard --demo
+```
+
+To inspect an existing local database instead:
+
+```sh
+python -m pokeradar --db demo.sqlite3 dashboard
+```
+
+The dashboard binds only to `127.0.0.1`. Use `--port 8766` to change the port; Ctrl+C stops it. It reads the newest 100 records per history table in a consistent read-only SQLite snapshot. A missing database shows empty states without creating a file. An unreadable/incompatible database shows a warning. Invalid record payloads show unknown values rather than inferred stock or prices.
+
+The view shows the registered product, observation history, source fetch outcomes, price provenance, suppression reasons and dry-run alert history. Freshness is recalculated at page load; recorded stock status is historical, not current availability. Use **Refresh view** manually. There is no polling or scheduling. A stale observation cannot establish current source health, and the source outcome card explicitly describes fixture evidence.
+
+`--demo` ignores the database path and generates disposable in-memory fixtures through the core pipeline, showing sold-out, in-stock, repeated stock suppression and blocked evidence with one dry-run event. Relative sample times are regenerated on each page load for demonstration; they are not a persistent or live feed. No files or existing alerts are changed. All sample prices are synthetic; verified MSRP stays unknown.
 
 ## Setup and checks
 

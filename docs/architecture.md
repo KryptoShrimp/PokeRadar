@@ -29,3 +29,12 @@ History reports recorded status at import time. It is an audit view, not a curre
 ## Verification boundaries
 
 Tests cover normalization failure modes, price uncertainty, freshness edges, timestamp ordering, episode transitions, append-only enforcement, atomic rollback, actual CLI process restart and concurrent imports. No tests contact retailers. Passing these checks establishes fixture pipeline behavior only. Syntax compilation is not a lint/typecheck substitute; neither tool is configured in this dependency-free repository.
+
+
+## Local dashboard milestone
+
+`pokeradar/dashboard.py` serves server-rendered HTML using the Python standard library. It binds exclusively to loopback, validates the Host header, serves only GET `/`, and exposes no file browsing, SQL, write, or export routes. A restrictive content security policy disallows scripts, external resources and framing. Dynamic text is HTML-escaped, and the only product link comes from the fixed registry. No third-party browser assets are fetched.
+
+Existing SQLite databases are opened with `mode=ro` and `query_only=ON`; the dashboard never calls the schema-initializing connector for on-disk data. Each request uses a consistent read transaction and closes the connection. Missing databases remain missing. Read failures and invalid JSON payloads degrade to warnings/unknown evidence. Views are bounded to 100 rows per table, newest insertion first (not necessarily newest evidence time); there is no pagination yet. A later arrival can contain older evidence, so the latest-record card is explicitly historical. The registry currently contains one product; multi-product monitoring remains future work.
+
+Demo mode uses the real pipeline in an ephemeral in-memory SQLite database and regenerates relative fixture times per request. Normal mode uses the current clock only for derived freshness; stored statuses and decisions are not recomputed or mutated. The dashboard is a local development server, not a production hosting or authentication solution.
