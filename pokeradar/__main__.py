@@ -1,4 +1,4 @@
-"""Run with python -m pokeradar; all output is JSON."""
+"""Run with python -m pokeradar; data commands output JSON."""
 
 import argparse
 from datetime import datetime, timezone
@@ -11,11 +11,14 @@ from .store import connect, ingest
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PokéRadar offline inventory intelligence (no network)")
+    parser = argparse.ArgumentParser(description="PokéRadar offline inventory intelligence (no retailer requests)")
     parser.add_argument("--db", default="pokeradar.sqlite3", help="local SQLite path")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("registry", help="show product and disabled source policy")
     commands.add_parser("live", help="explain why live access is disabled")
+    dashboard = commands.add_parser("dashboard", help="serve a read-only loopback dashboard")
+    dashboard.add_argument("--port", type=int, default=8765)
+    dashboard.add_argument("--demo", action="store_true", help="show synthetic in-memory history")
     for name in ("history", "decisions", "alerts"):
         command = commands.add_parser(name, help="inspect persisted " + name)
         command.add_argument("--limit", type=int, default=20)
@@ -25,6 +28,10 @@ def main():
     command.add_argument("--now", type=timestamp, help="explicit replay clock for offline fixtures only")
     args = parser.parse_args()
     try:
+        if args.command == "dashboard":
+            from .dashboard import serve
+            serve(args.db, args.port, args.demo)
+            return
         if args.command == "registry":
             result = registry()
         elif args.command == "live":
